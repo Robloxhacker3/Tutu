@@ -1,0 +1,26 @@
+name: Generate Keys File
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Daily at midnight UTC
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  generate-keys-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate and Download Keys
+        run: |
+          curl -o keys.txt http://localhost:3000/generate-keys-file # Replace with your API URL
+
+      - name: Commit and Push Keys File
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add keys.txt
+          git commit -m "Update keys [ci skip]"
+          git push
